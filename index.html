@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>StoneCraft Innovations – Golf Tournament Giveaway</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --green-deep:#1a5c38;
+    --green-mid:#2e7d54;
+    --green-light:#e8f5ee;
+    --gold:#c9a84c;
+    --gold-light:#f5edd6;
+    --stone:#7a6652;
+    --stone-light:#f0ebe3;
+    --cream:#fafaf7;
+    --charcoal:#2b2b2b;
+    --muted:#6b6b6b;
+    --error:#c0392b;
+    --radius:14px;
+    --shadow:0 4px 24px rgba(26,92,56,.13);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:linear-gradient(160deg,#0f3d24 0%,#1a5c38 40%,#2e7d54 100%);
+    min-height:100vh;
+    padding:20px 12px 48px;
+    color:var(--charcoal);
+  }
+
+  /* ── Card shell ── */
+  .card{
+    max-width:480px;
+    margin:0 auto;
+    background:var(--cream);
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 12px 48px rgba(0,0,0,.35);
+  }
+
+  /* ── Header ── */
+  .header{
+    background:linear-gradient(135deg,#0f3d24 0%,#1a5c38 60%,#245c3c 100%);
+    padding:28px 24px 20px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .header::before{
+    content:'';
+    position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .logo-icon{
+    width:56px;height:56px;
+    background:linear-gradient(135deg,var(--gold),#a8832e);
+    border-radius:14px;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:28px;margin-bottom:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.3);
+    position:relative;
+  }
+  .brand-name{
+    color:#fff;
+    font-size:22px;font-weight:700;letter-spacing:.5px;
+    text-shadow:0 1px 4px rgba(0,0,0,.3);
+  }
+  .brand-sub{
+    color:rgba(255,255,255,.72);
+    font-size:12px;letter-spacing:2px;text-transform:uppercase;
+    margin-top:2px;
+  }
+  .event-title{
+    margin-top:16px;
+    color:var(--gold);
+    font-size:15px;font-weight:600;letter-spacing:.3px;
+    border-top:1px solid rgba(255,255,255,.15);
+    padding-top:14px;
+  }
+
+  /* ── Prize banner ── */
+  .prize-banner{
+    background:linear-gradient(135deg,var(--gold-light),#fdf5e0);
+    border-bottom:1px solid #e8d8a8;
+    padding:18px 20px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .prize-icon{
+    font-size:38px;flex-shrink:0;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.15));
+  }
+  .prize-text h2{
+    color:var(--green-deep);
+    font-size:20px;font-weight:800;line-height:1.1;
+  }
+  .prize-text p{
+    color:var(--stone);
+    font-size:12.5px;margin-top:4px;line-height:1.5;
+  }
+  .prize-badge{
+    display:inline-block;
+    background:var(--green-deep);
+    color:#fff;
+    font-size:10px;font-weight:700;letter-spacing:1px;
+    text-transform:uppercase;
+    padding:3px 8px;border-radius:20px;
+    margin-top:6px;
+  }
+
+  /* ── Basket details ── */
+  .basket-row{
+    background:var(--stone-light);
+    padding:12px 20px;
+    display:flex;gap:8px;align-items:flex-start;
+    border-bottom:1px solid #e4dcd4;
+  }
+  .basket-row span.bi{font-size:16px;margin-top:1px;flex-shrink:0;}
+  .basket-row p{font-size:12.5px;color:var(--stone);line-height:1.5;}
+  .basket-row p strong{color:var(--charcoal);}
+
+  /* ── Form section ── */
+  .form-section{padding:24px 20px 8px;}
+  .section-label{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+    color:var(--green-deep);margin-bottom:16px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-label::after{
+    content:'';flex:1;height:1px;background:var(--green-light);
+  }
+
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-size:13px;font-weight:600;color:var(--charcoal);
+    margin-bottom:6px;
+  }
+  .field label .req{color:var(--error);margin-left:2px;}
+  .field input[type=text],
+  .field input[type=tel],
+  .field input[type=email]{
+    width:100%;
+    padding:13px 15px;
+    border:1.5px solid #d8d8d2;
+    border-radius:10px;
+    font-size:16px;/* 16px prevents iOS zoom */
+    color:var(--charcoal);
+    background:#fff;
+    transition:border-color .2s,box-shadow .2s;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .field input:focus{
+    outline:none;
+    border-color:var(--green-mid);
+    box-shadow:0 0 0 3px rgba(46,125,84,.12);
+  }
+  .field input.error{border-color:var(--error);}
+  .field .err-msg{
+    color:var(--error);font-size:12px;margin-top:5px;display:none;
+  }
+  .field input.error ~ .err-msg{display:block;}
+
+  /* Checkbox */
+  .check-wrap{
+    background:var(--green-light);
+    border:1.5px solid #b6dfc8;
+    border-radius:12px;
+    padding:14px 16px;
+    display:flex;gap:12px;align-items:flex-start;
+    cursor:pointer;
+    transition:background .2s,border-color .2s;
+    margin-bottom:20px;
+  }
+  .check-wrap:hover{background:#ddf0e7;border-color:var(--green-mid);}
+  .check-wrap input[type=checkbox]{
+    width:20px;height:20px;
+    accent-color:var(--green-deep);
+    flex-shrink:0;margin-top:1px;
+    cursor:pointer;
+  }
+  .check-wrap .check-text{font-size:13.5px;color:var(--charcoal);line-height:1.5;}
+  .check-wrap .check-text strong{color:var(--green-deep);}
+
+  /* Submit button */
+  .btn-submit{
+    width:100%;
+    padding:16px;
+    background:linear-gradient(135deg,var(--green-deep),var(--green-mid));
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:16px;font-weight:700;
+    letter-spacing:.3px;
+    cursor:pointer;
+    transition:opacity .2s,transform .1s;
+    box-shadow:0 4px 16px rgba(26,92,56,.35);
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .btn-submit:active{transform:scale(.98);}
+  .btn-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+  .privacy-note{
+    text-align:center;font-size:11.5px;color:var(--muted);
+    margin-top:12px;line-height:1.5;padding-bottom:24px;
+  }
+  .privacy-note a{color:var(--green-mid);text-decoration:none;}
+
+  /* ── QR section ── */
+  .qr-section{
+    background:#fff;
+    border-top:1px solid #e8e8e0;
+    padding:24px 20px;
+    text-align:center;
+  }
+  .qr-section h3{
+    font-size:14px;font-weight:700;color:var(--charcoal);
+    margin-bottom:4px;
+  }
+  .qr-section p{font-size:12px;color:var(--muted);margin-bottom:16px;}
+  #qrcode{
+    display:inline-block;
+    padding:12px;
+    background:#fff;
+    border-radius:12px;
+    border:1.5px solid #e0dbd4;
+    box-shadow:var(--shadow);
+  }
+  #qrcode canvas,#qrcode img{border-radius:6px;}
+  .qr-url{
+    margin-top:12px;
+    font-size:11px;color:var(--muted);
+    word-break:break-all;
+    background:#f4f4f0;
+    border-radius:8px;
+    padding:8px 12px;
+  }
+
+  /* ── Thank-you screen ── */
+  .thankyou{
+    display:none;
+    padding:40px 24px;
+    text-align:center;
+  }
+  .ty-icon{font-size:64px;margin-bottom:16px;}
+  .ty-title{
+    font-size:24px;font-weight:800;color:var(--green-deep);
+    margin-bottom:8px;
+  }
+  .ty-sub{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
+  .ty-badge{
+    display:inline-block;
+    background:var(--gold-light);
+    border:1.5px solid var(--gold);
+    border-radius:12px;
+    padding:12px 20px;
+    font-size:14px;color:var(--stone);line-height:1.5;
+  }
+  .ty-badge strong{color:var(--green-deep);display:block;font-size:16px;margin-bottom:2px;}
+
+  /* ── Admin panel ── */
+  .admin-toggle{
+    text-align:center;
+    padding:8px;
+    font-size:11px;color:rgba(255,255,255,.5);
+    cursor:pointer;letter-spacing:.5px;
+  }
+  .admin-panel{
+    display:none;
+    background:#1a1a1a;color:#e0e0e0;
+    border-radius:0 0 22px 22px;
+    padding:16px;font-size:12px;
+    font-family:monospace;
+    max-height:320px;overflow-y:auto;
+  }
+  .admin-panel h4{color:var(--gold);margin-bottom:10px;}
+  .admin-entry{
+    background:#2a2a2a;border-radius:8px;
+    padding:10px 12px;margin-bottom:8px;line-height:1.6;
+  }
+  .admin-entry .ae-name{color:#fff;font-weight:bold;}
+  .admin-entry .ae-quote{color:var(--gold);}
+  .admin-clear{
+    background:#c0392b;color:#fff;border:none;
+    border-radius:6px;padding:6px 14px;font-size:11px;
+    cursor:pointer;margin-top:8px;
+  }
+  @media(max-width:360px){
+    .prize-text h2{font-size:17px;}
+    .brand-name{font-size:19px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="logo-icon">⛳</div>
+    <div class="brand-name">StoneCraft Innovations</div>
+    <div class="brand-sub">Vuba Stone · Premium Surfacing</div>
+    <div class="event-title">🏆 Golf Tournament Giveaway</div>
+  </div>
+
+  <!-- ── PRIZE BANNER ── -->
+  <div class="prize-banner">
+    <div class="prize-icon">🎁</div>
+    <div class="prize-text">
+      <h2>$500 Gift Certificate</h2>
+      <p>+ Exclusive Golf-Themed Prize Basket<br>One lucky winner takes it all!</p>
+      <span class="prize-badge">Enter to Win</span>
+    </div>
+  </div>
+
+  <!-- ── BASKET DETAILS ── -->
+  <div class="basket-row">
+    <span class="bi">🧺</span>
+    <p><strong>What's in the basket?</strong> Premium golf accessories, branded StoneCraft gear, local favorites, and a $500 Vuba Stone gift certificate redeemable toward any residential or commercial surfacing project.</p>
+  </div>
+
+  <!-- ── ENTRY FORM ── -->
+  <div id="formView">
+    <div class="form-section">
+      <div class="section-label">Enter Your Details</div>
+
+      <div class="field">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" id="f-name" placeholder="Jane Smith" autocomplete="name"/>
+        <div class="err-msg">Please enter your full name.</div>
+      </div>
+
+      <div class="field">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" id="f-phone" placeholder="(208) 555-0100" autocomplete="tel"/>
+        <div class="err-msg">Please enter a valid phone number.</div>
+      </div>
+
+      <div class="field">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="f-email" placeholder="jane@email.com" autocomplete="email"/>
+        <div class="err-msg">Please enter a valid email address.</div>
+      </div>
+
+      <label class="check-wrap">
+        <input type="checkbox" id="f-quote"/>
+        <div class="check-text">
+          <strong>Yes, I'm interested in a free Vuba Stone quote!</strong><br>
+          A StoneCraft specialist will follow up with no obligation.
+        </div>
+      </label>
+
+      <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+        <span>🎯</span> Submit My Entry
+      </button>
+
+      <p class="privacy-note">
+        Your information is used only for this giveaway and, if selected, follow-up about a Vuba Stone quote.<br>No spam — ever.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── THANK YOU ── -->
+  <div class="thankyou" id="tyView">
+    <div class="ty-icon">🎉</div>
+    <div class="ty-title">You're In!</div>
+    <div class="ty-sub">
+      Thanks for entering the StoneCraft Innovations Golf Tournament Giveaway. Good luck — we'll be in touch if you're our winner!
+    </div>
+    <div class="ty-badge">
+      <strong>$500 Gift Certificate + Prize Basket</strong>
+      Winner announced after the tournament. Keep an eye on your email!
+    </div>
+  </div>
+
+  <!-- ── QR CODE ── -->
+  <div class="qr-section">
+    <h3>📱 Share This Giveaway</h3>
+    <p>Scan to open the form on any phone</p>
+    <div id="qrcode"></div>
+    <div class="qr-url" id="qr-url-label"></div>
+  </div>
+
+</div>
+
+<!-- Admin toggle (discreet) -->
+<div class="admin-toggle" onclick="toggleAdmin()">· admin ·</div>
+<div class="admin-panel" id="adminPanel">
+  <h4>📋 Giveaway Entries</h4>
+  <div id="adminEntries"></div>
+  <button class="admin-clear" onclick="clearEntries()">Clear All Entries</button>
+</div>
+
+<script>
+// ── QR Code ──────────────────────────────────────────────
+(function(){
+  var url = window.location.href.split('?')[0];
+  document.getElementById('qr-url-label').textContent = url;
+  try {
+    new QRCode(document.getElementById("qrcode"), {
+      text: url,
+      width: 180,
+      height: 180,
+      colorDark: "#1a5c38",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } catch(e) {
+    document.getElementById('qrcode').innerHTML =
+      '<p style="font-size:12px;color:#888;padding:20px;">QR code loads when hosted online</p>';
+  }
+})();
+
+// ── Formspree endpoint — replace YOUR_FORM_ID after signing up at formspree.io ──
+var FORMSPREE_ID = 'xaqzpnaa';
+
+// ── Form submission ───────────────────────────────────────
+function submitForm() {
+  var name  = document.getElementById('f-name');
+  var phone = document.getElementById('f-phone');
+  var email = document.getElementById('f-email');
+  var quote = document.getElementById('f-quote').checked;
+  var ok = true;
+
+  [name, phone, email].forEach(function(el){ el.classList.remove('error'); });
+
+  if (!name.value.trim() || name.value.trim().length < 2) {
+    name.classList.add('error'); ok = false;
+  }
+  if (!phone.value.trim() || !/[\d\s\-\(\)\+]{7,}/.test(phone.value)) {
+    phone.classList.add('error'); ok = false;
+  }
+  if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    email.classList.add('error'); ok = false;
+  }
+  if (!ok) return;
+
+  // Disable button while submitting
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Submitting...';
+
+  // Send to Formspree
+  fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      name:  name.value.trim(),
+      phone: phone.value.trim(),
+      email: email.value.trim(),
+      vuba_stone_quote_interest: quote ? 'Yes' : 'No',
+      _subject: 'New Giveaway Entry – StoneCraft Golf Tournament'
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if (data.ok || data.next) {
+      // Also save locally as backup
+      var entries = JSON.parse(localStorage.getItem('sc_entries') || '[]');
+      entries.push({ name: name.value.trim(), phone: phone.value.trim(), email: email.value.trim(), quote: quote, ts: new Date().toLocaleString() });
+      localStorage.setItem('sc_entries', JSON.stringify(entries));
+      // Show thank you
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('tyView').style.display = 'block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<span>🎯</span> Submit My Entry';
+      alert('Something went wrong. Please try again.');
+    }
+  })
+  .catch(function(){
+    btn.disabled = false;
+    btn.innerHTML = '<span>🎯</span> Submit My Entry';
+    alert('Connection error. Please check your internet and try again.');
+  });
+}
+
+// ── Admin ─────────────────────────────────────────────────
+function toggleAdmin() {
+  var p = document.getElementById('adminPanel');
+  var visible = p.style.display === 'block';
+  p.style.display = visible ? 'none' : 'block';
+  if (!visible) renderAdmin();
+}
+function renderAdmin() {
+  var entries = JSON.parse(localStorage.getItem('sc_entries') || '[]');
+  var el = document.getElementById('adminEntries');
+  if (!entries.length) { el.innerHTML = '<p style="color:#888">No entries yet.</p>'; return; }
+  el.innerHTML = entries.map(function(e, i){
+    return '<div class="admin-entry">'
+      +'<span class="ae-name">'+(i+1)+'. '+e.name+'</span><br>'
+      +'📞 '+e.phone+' &nbsp;|&nbsp; ✉️ '+e.email+'<br>'
+      +(e.quote ? '<span class="ae-quote">✅ Interested in Vuba Stone quote</span><br>' : '')
+      +'<span style="color:#666;font-size:10px">'+e.ts+'</span>'
+      +'</div>';
+  }).join('');
+}
+function clearEntries() {
+  if (confirm('Clear all entries from this device?')) {
+    localStorage.removeItem('sc_entries');
+    renderAdmin();
+  }
+}
+</script>
+</body>
+</html>
